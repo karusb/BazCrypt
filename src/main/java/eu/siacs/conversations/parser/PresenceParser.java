@@ -1,7 +1,11 @@
 package eu.siacs.conversations.parser;
 
-import java.util.ArrayList;
+import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import eu.siacs.conversations.Config;
 import eu.siacs.conversations.crypto.PgpEngine;
 import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.entities.Contact;
@@ -32,7 +36,7 @@ public class PresenceParser extends AbstractParser implements
 			boolean before = mucOptions.online();
 			int count = mucOptions.getUsers().size();
 			final ArrayList<MucOptions.User> tileUserBefore = new ArrayList<>(mucOptions.getUsers().subList(0,Math.min(mucOptions.getUsers().size(),5)));
-			mucOptions.processPacket(packet, mPgpEngine);
+			processConferencePresence(packet, mucOptions);
 			final ArrayList<MucOptions.User> tileUserAfter = new ArrayList<>(mucOptions.getUsers().subList(0,Math.min(mucOptions.getUsers().size(),5)));
 			if (!tileUserAfter.equals(tileUserBefore)) {
 				mXmppConnectionService.getAvatarService().clear(conversation);
@@ -43,6 +47,110 @@ public class PresenceParser extends AbstractParser implements
 				mXmppConnectionService.updateMucRosterUi();
 			}
 		}
+	}
+
+	private void processConferencePresence(PresencePacket packet, MucOptions mucOptions) {
+		final Jid from = packet.getFrom();
+		if (!from.isBareJid()) {
+			final String name = from.getResourcepart();
+			final String type = packet.getAttribute("type");
+			final Element x = packet.findChild("x", "http://jabber.org/protocol/muc#user");
+			Avatar avatar = Avatar.parsePresence(packet.findChild("x", "vcard-temp:x:update"));
+			final List<String> codes = getStatusCodes(x);
+			if (type == null) {
+				MucOptions.User user = new MucOptions.User(mucOptions,from);
+				if (x != null) {
+					Element item = x.findChild("item");
+					if (item != null && name != null) {
+						user.setName(name);
+						user.setAffiliation(item.getAttribute("affiliation"));
+						user.setRole(item.getAttribute("role"));
+						user.setJid(item.getAttributeAsJid("jid"));
+						if (codes.contains(MucOptions.STATUS_CODE_SELF_PRESENCE) || packet.getFrom().equals(mucOptions.getConversation().getJid())) {
+							mucOptions.setError(MucOptions.ERROR_NO_ERROR);
+							mucOptions.setSelf(user);
+							if (mucOptions.mNickChangingInProgress) {
+								if (mucOptions.onRenameListener != null) {
+									mucOptions.onRenameListener.onSuccess();
+								}
+								mucOptions.mNickChangingInProgress = false;
+							}
+						} else {
+							mucOptions.addUser(user);
+						}
+						if (mXmppConnectionService.getPgpEngine() != null) {
+							Element signed = packet.findChild("x", "jabber:x:signed");
+							if (signed != null) {
+								Element status = packet.findChild("status");
+								String msg = status == null ? "" : status.getContent();
+								long keyId = mXmppConnectionService.getPgpEngine().fetchKeyId(mucOptions.getAccount(), msg, signed.getContent());
+								if (keyId != 0) {
+									user.setPgpKeyId(keyId);
+								}
+							}
+						}
+						if (avatar != null) {
+							avatar.owner = from;
+							if (mXmppConnectionService.getFileBackend().isAvatarCached(avatar)) {
+								user.setAvatar(avatar);
+							} else {
+								mXmppConnectionService.fetchAvatar(mucOptions.getAccount(), avatar);
+							}
+							Log.d(Config.LOGTAG, "user " + avatar.owner + " has avatar");
+						}
+					}
+				}
+			} else if (type.equals("unavailable")) {
+				if (codes.contains(MucOptions.STATUS_CODE_SELF_PRESENCE) ||
+						packet.getFrom().equals(mucOptions.getConversation().getJid())) {
+					if (codes.contains(MucOptions.STATUS_CODE_CHANGED_NICK)) {
+						mucOptions.mNickChangingInProgress = true;
+					} else if (codes.contains(MucOptions.STATUS_CODE_KICKED)) {
+						mucOptions.setError(MucOptions.KICKED_FROM_ROOM);
+					} else if (codes.contains(MucOptions.STATUS_CODE_BANNED)) {
+						mucOptions.setError(MucOptions.ERROR_BANNED);
+					} else if (codes.contains(MucOptions.STATUS_CODE_LOST_MEMBERSHIP)) {
+						mucOptions.setError(MucOptions.ERROR_MEMBERS_ONLY);
+					} else {
+						mucOptions.setError(MucOptions.ERROR_UNKNOWN);
+					}
+				} else {
+					mucOptions.deleteUser(name);
+				}
+			} else if (type.equals("error")) {
+				Element error = packet.findChild("error");
+				if (error != null && error.hasChild("conflict")) {
+					if (mucOptions.online()) {
+						if (mucOptions.onRenameListener != null) {
+							mucOptions.onRenameListener.onFailure();
+						}
+					} else {
+						mucOptions.setError(MucOptions.ERROR_NICK_IN_USE);
+					}
+				} else if (error != null && error.hasChild("not-authorized")) {
+					mucOptions.setError(MucOptions.ERROR_PASSWORD_REQUIRED);
+				} else if (error != null && error.hasChild("forbidden")) {
+					mucOptions.setError(MucOptions.ERROR_BANNED);
+				} else if (error != null && error.hasChild("registration-required")) {
+					mucOptions.setError(MucOptions.ERROR_MEMBERS_ONLY);
+				}
+			}
+		}
+	}
+
+	private static List<String> getStatusCodes(Element x) {
+		List<String> codes = new ArrayList<>();
+		if (x != null) {
+			for (Element child : x.getChildren()) {
+				if (child.getName().equals("status")) {
+					String code = child.getAttribute("code");
+					if (code != null) {
+						codes.add(code);
+					}
+				}
+			}
+		}
+		return codes;
 	}
 
 	public void parseContactPresence(final PresencePacket packet, final Account account) {

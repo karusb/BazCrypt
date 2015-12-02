@@ -240,6 +240,19 @@ public class Message extends AbstractEntity {
 		}
 	}
 
+	public Object getUserOrContact() {
+		if (this.conversation.getMode() == Conversation.MODE_SINGLE) {
+			return this.conversation.getContact();
+		} else {
+			if (this.trueCounterpart == null) {
+				return getConversation().getMucOptions().findUser(getCounterpart().getResourcepart());
+			} else {
+				return this.conversation.getAccount().getRoster()
+						.getContactFromRoster(this.trueCounterpart);
+			}
+		}
+	}
+
 	public String getBody() {
 		return body;
 	}
