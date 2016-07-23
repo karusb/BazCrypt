@@ -1040,12 +1040,16 @@ public class ConversationActivity extends XmppActivity
 
 	@Override
 	protected void onNewIntent(final Intent intent) {
+		Log.d(Config.LOGTAG,"onNewIntent()");
 		if (xmppConnectionServiceBound) {
+			Log.d(Config.LOGTAG,"onNewIntent(): service bound");
 			if (intent != null && VIEW_CONVERSATION.equals(intent.getType())) {
 				handleViewConversationIntent(intent);
-				setIntent(new Intent());
+				Log.d(Config.LOGTAG,"onNewIntent() : overwriting intent");
+				setIntent(new Intent(Intent.ACTION_MAIN));
 			}
 		} else {
+			Log.d(Config.LOGTAG,"onNewIntent(): service was not bound. saving for later");
 			setIntent(intent);
 		}
 	}
@@ -1117,6 +1121,7 @@ public class ConversationActivity extends XmppActivity
 
 	@Override
 	void onBackendConnected() {
+		Log.d(Config.LOGTAG,"onBackendConnected()");
 		this.xmppConnectionService.getNotificationService().setIsInForeground(true);
 		updateConversationList();
 
@@ -1127,6 +1132,8 @@ public class ConversationActivity extends XmppActivity
 			}
 			mPendingConferenceInvite = null;
 		}
+
+		final Intent intent = getIntent();
 
 		if (xmppConnectionService.getAccounts().size() == 0) {
 			if (mRedirected.compareAndSet(false, true)) {
@@ -1143,17 +1150,18 @@ public class ConversationActivity extends XmppActivity
 			if (mRedirected.compareAndSet(false, true)) {
 				Account pendingAccount = xmppConnectionService.getPendingAccount();
 				if (pendingAccount == null) {
-					Intent intent = new Intent(this, StartConversationActivity.class);
+					Intent startConversationActivity = new Intent(this, StartConversationActivity.class);
 					intent.putExtra("init", true);
-					startActivity(intent);
+					startActivity(startConversationActivity);
 				} else {
 					switchToAccount(pendingAccount, true);
 				}
 				finish();
 			}
-		} else if (getIntent() != null && VIEW_CONVERSATION.equals(getIntent().getType())) {
+		} else if (intent != null && VIEW_CONVERSATION.equals(intent.getType())) {
+			Log.d(Config.LOGTAG,"onBackendConnected() - stored intent was view_conversations");
 			clearPending();
-			handleViewConversationIntent(getIntent());
+			handleViewConversationIntent(intent);
 		} else if (selectConversationByUuid(mOpenConverstaion)) {
 			if (mPanelOpen) {
 				showConversationsOverview();
@@ -1200,10 +1208,12 @@ public class ConversationActivity extends XmppActivity
 		if (!ExceptionHelper.checkForCrash(this, this.xmppConnectionService)) {
 			openBatteryOptimizationDialogIfNeeded();
 		}
-		setIntent(new Intent());
+		Log.d(Config.LOGTAG,"onBackendConnected() - overwriting intent");
+		setIntent(new Intent(Intent.ACTION_MAIN));
 	}
 
 	private void handleViewConversationIntent(final Intent intent) {
+		Log.d(Config.LOGTAG,"handleViewConversationIntent()");
 		final String uuid = intent.getStringExtra(CONVERSATION);
 		final String downloadUuid = intent.getStringExtra(MESSAGE);
 		final String text = intent.getStringExtra(TEXT);
