@@ -1039,16 +1039,17 @@ public class ConversationActivity extends XmppActivity
 	@Override
 	protected void onNewIntent(final Intent intent) {
 		Log.d(Config.LOGTAG,"onNewIntent()");
-		if (xmppConnectionServiceBound) {
-			Log.d(Config.LOGTAG,"onNewIntent(): service bound");
-			if (intent != null && ACTION_VIEW_CONVERSATION.equals(intent.getAction())) {
+		if (intent != null && ACTION_VIEW_CONVERSATION.equals(intent.getAction())) {
+			mOpenConverstaion = null;
+			if (xmppConnectionServiceBound) {
+				Log.d(Config.LOGTAG,"onNewIntent(): service bound");
 				handleViewConversationIntent(intent);
 				Log.d(Config.LOGTAG,"onNewIntent() : overwriting intent");
 				intent.setAction(Intent.ACTION_MAIN);
+			} else {
+				Log.d(Config.LOGTAG, "onNewIntent(): service was not bound. saving for later");
+				setIntent(intent);
 			}
-		} else {
-			Log.d(Config.LOGTAG,"onNewIntent(): service was not bound. saving for later");
-			setIntent(intent);
 		}
 	}
 
@@ -1156,11 +1157,6 @@ public class ConversationActivity extends XmppActivity
 				}
 				finish();
 			}
-		} else if (intent != null && ACTION_VIEW_CONVERSATION.equals(intent.getAction())) {
-			Log.d(Config.LOGTAG,"onBackendConnected() - stored intent was view_conversations");
-			clearPending();
-			handleViewConversationIntent(intent);
-			intent.setAction(Intent.ACTION_MAIN);
 		} else if (selectConversationByUuid(mOpenConverstaion)) {
 			if (mPanelOpen) {
 				showConversationsOverview();
@@ -1172,6 +1168,11 @@ public class ConversationActivity extends XmppActivity
 			}
 			this.mConversationFragment.reInit(getSelectedConversation());
 			mOpenConverstaion = null;
+		} else if (intent != null && ACTION_VIEW_CONVERSATION.equals(intent.getAction())) {
+			Log.d(Config.LOGTAG,"onBackendConnected() - stored intent was view_conversations");
+			clearPending();
+			handleViewConversationIntent(intent);
+			intent.setAction(Intent.ACTION_MAIN);
 		} else if (getSelectedConversation() == null) {
 			showConversationsOverview();
 			clearPending();
