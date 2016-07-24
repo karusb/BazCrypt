@@ -69,11 +69,9 @@ import eu.siacs.conversations.xmpp.jid.Jid;
 public class ConversationActivity extends XmppActivity
 	implements OnAccountUpdate, OnConversationUpdate, OnRosterUpdate, OnUpdateBlocklist, XmppConnectionService.OnShowErrorToast {
 
-	public static final String ACTION_DOWNLOAD = "eu.siacs.conversations.action.DOWNLOAD";
-
-	public static final String VIEW_CONVERSATION = "viewConversation";
+	public static final String ACTION_VIEW_CONVERSATION = "eu.siacs.conversations.action.VIEW";
 	public static final String CONVERSATION = "conversationUuid";
-	public static final String MESSAGE = "messageUuid";
+	public static final String EXTRA_DOWNLOAD_UUID = "eu.siacs.conversations.download_uuid";
 	public static final String TEXT = "text";
 	public static final String NICK = "nick";
 	public static final String PRIVATE_MESSAGE = "pm";
@@ -1043,10 +1041,10 @@ public class ConversationActivity extends XmppActivity
 		Log.d(Config.LOGTAG,"onNewIntent()");
 		if (xmppConnectionServiceBound) {
 			Log.d(Config.LOGTAG,"onNewIntent(): service bound");
-			if (intent != null && VIEW_CONVERSATION.equals(intent.getType())) {
+			if (intent != null && ACTION_VIEW_CONVERSATION.equals(intent.getAction())) {
 				handleViewConversationIntent(intent);
 				Log.d(Config.LOGTAG,"onNewIntent() : overwriting intent");
-				setIntent(new Intent(Intent.ACTION_MAIN));
+				intent.setAction(Intent.ACTION_MAIN);
 			}
 		} else {
 			Log.d(Config.LOGTAG,"onNewIntent(): service was not bound. saving for later");
@@ -1158,10 +1156,11 @@ public class ConversationActivity extends XmppActivity
 				}
 				finish();
 			}
-		} else if (intent != null && VIEW_CONVERSATION.equals(intent.getType())) {
+		} else if (intent != null && ACTION_VIEW_CONVERSATION.equals(intent.getAction())) {
 			Log.d(Config.LOGTAG,"onBackendConnected() - stored intent was view_conversations");
 			clearPending();
 			handleViewConversationIntent(intent);
+			intent.setAction(Intent.ACTION_MAIN);
 		} else if (selectConversationByUuid(mOpenConverstaion)) {
 			if (mPanelOpen) {
 				showConversationsOverview();
@@ -1208,14 +1207,12 @@ public class ConversationActivity extends XmppActivity
 		if (!ExceptionHelper.checkForCrash(this, this.xmppConnectionService)) {
 			openBatteryOptimizationDialogIfNeeded();
 		}
-		Log.d(Config.LOGTAG,"onBackendConnected() - overwriting intent");
-		setIntent(new Intent(Intent.ACTION_MAIN));
 	}
 
 	private void handleViewConversationIntent(final Intent intent) {
 		Log.d(Config.LOGTAG,"handleViewConversationIntent()");
 		final String uuid = intent.getStringExtra(CONVERSATION);
-		final String downloadUuid = intent.getStringExtra(MESSAGE);
+		final String downloadUuid = intent.getStringExtra(EXTRA_DOWNLOAD_UUID);
 		final String text = intent.getStringExtra(TEXT);
 		final String nick = intent.getStringExtra(NICK);
 		final boolean pm = intent.getBooleanExtra(PRIVATE_MESSAGE, false);
