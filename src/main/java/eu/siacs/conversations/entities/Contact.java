@@ -196,7 +196,7 @@ public class Contact implements ListItem, Blockable {
 			values.put(ACCOUNT, accountUuid);
 			values.put(SYSTEMNAME, systemName);
 			values.put(SERVERNAME, serverName);
-			values.put(JID, jid.toString());
+			values.put(JID, jid.toPreppedString());
 			values.put(OPTIONS, subscription);
 			values.put(SYSTEMACCOUNT, systemAccount);
 			values.put(PHOTOURI, photoUri);
