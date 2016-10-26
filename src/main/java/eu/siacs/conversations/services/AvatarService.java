@@ -318,18 +318,16 @@ public class AvatarService implements OnAdvancedStreamFeaturesLoaded {
 		letter = letter.toUpperCase(Locale.getDefault());
 		Paint tilePaint = new Paint(), textPaint = new Paint();
 		tilePaint.setColor(tileColor);
-		textPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-		textPaint.setColor(FG_COLOR);
-		textPaint.setTypeface(Typeface.create("sans-serif-light",
-				Typeface.NORMAL));
-		textPaint.setTextSize((float) ((right - left) * 0.8));
+		//textPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+		//textPaint.setColor(FG_COLOR);
+		//textPaint.setTypeface(Typeface.create("sans-serif-light",Typeface.NORMAL));
+		//textPaint.setTextSize((float) ((right - left) * 0.8));
 		Rect rect = new Rect();
 
 		canvas.drawRect(new Rect(left, top, right, bottom), tilePaint);
-		textPaint.getTextBounds(letter, 0, 1, rect);
-		float width = textPaint.measureText(letter);
-		canvas.drawText(letter, (right + left) / 2 - width / 2, (top + bottom)
-				/ 2 + rect.height() / 2, textPaint);
+		//textPaint.getTextBounds(letter, 0, 1, rect);
+		//float width = textPaint.measureText(letter);
+		//canvas.drawText(letter, (right + left) / 2 - width / 2, (top + bottom) / 2 + rect.height() / 2, textPaint);
 		return true;
 	}
 
