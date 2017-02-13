@@ -74,6 +74,7 @@ public class TagWriter {
 
 	public TagWriter writeStanzaAsync(AbstractStanza stanza) {
 		if (finshed) {
+			Log.d(Config.LOGTAG,"writing stanza "+stanza+" even to finished tag writer");
 			return this;
 		} else {
 			if (!asyncStanzaWriter.isAlive()) {
