@@ -89,6 +89,7 @@ public class TagWriter {
 	}
 
 	public void finish() {
+		Log.d(Config.LOGTAG,"set tag writer to finished");
 		this.finshed = true;
 	}
 
