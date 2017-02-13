@@ -1,10 +1,13 @@
 package eu.siacs.conversations.xml;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import eu.siacs.conversations.Config;
 import eu.siacs.conversations.xmpp.stanzas.AbstractStanza;
 
 public class TagWriter {
@@ -101,6 +104,7 @@ public class TagWriter {
 		finish();
 		if (outputStream != null) {
 			try {
+				Log.d(Config.LOGTAG,"force closing tag writer output stream");
 				outputStream.close();
 			} catch (IOException e) {
 				//ignoring

@@ -501,6 +501,7 @@ public class XmppConnection implements Runnable {
 	}
 
 	private void processStream() throws XmlPullParserException, IOException, NoSuchAlgorithmException {
+		Log.d(Config.LOGTAG,"starting to process stream");
 		Tag nextTag = tagReader.readTag();
 		while (nextTag != null && !nextTag.isEnd("stream")) {
 			if (nextTag.isStart("error")) {
@@ -521,7 +522,9 @@ public class XmppConnection implements Runnable {
 				account.setKey(Account.PINNED_MECHANISM_KEY,
 						String.valueOf(saslMechanism.getPriority()));
 				tagReader.reset();
+				Log.d(Config.LOGTAG,"sending stream restart after log in");
 				sendStartStream();
+				Log.d(Config.LOGTAG,"start stream sent!");
 				final Tag tag = tagReader.readTag();
 				if (tag != null && tag.isStart("stream")) {
 					processStream();
@@ -1361,6 +1364,7 @@ public class XmppConnection implements Runnable {
 		}
 		if (socket != null) {
 			try {
+				Log.d(Config.LOGTAG,"force closing socket");
 				socket.close();
 			} catch (IOException e) {
 				Log.d(Config.LOGTAG,account.getJid().toBareJid()+": io exception "+e.getMessage()+" during force close");
