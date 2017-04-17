@@ -23,8 +23,8 @@ public class NickValidityChecker {
 
     public static boolean check(final Conversation conversation, final List<String> nicks) {
         Set<String> previousNicks = new HashSet<>(nicks);
-        for(String previousNick : previousNicks) {
-            if (!NickValidityChecker.check(conversation,previousNick)) {
+        for (String previousNick : previousNicks) {
+            if (!NickValidityChecker.check(conversation, previousNick)) {
                 return false;
             }
         }

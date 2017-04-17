@@ -43,7 +43,9 @@
         <item name="attr/icon_edit_body">@drawable/ic_action_edit_dark</item>
         <item name="attr/icon_done">@drawable/ic_action_done</item>
 
-        <item name="attr/message_bubble_received_monochrome">@drawable/message_bubble_received_white</item>
+        <item name="attr/message_bubble_received_monochrome">
+            @drawable/message_bubble_received_white
+        </item>
         <item name="attr/message_bubble_sent">@drawable/message_bubble_sent</item>
         <item name="attr/message_bubble_received_green">@drawable/message_bubble_received</item>
 
@@ -72,8 +74,10 @@
 
         <item name="attr/icon_notifications">@drawable/ic_notifications_black54_24dp</item>
         <item name="attr/icon_notifications_off">@drawable/ic_notifications_off_black54_24dp</item>
-        <item name="attr/icon_notifications_paused">@drawable/ic_notifications_paused_black54_24dp</item>
-        <item name="attr/icon_notifications_none">@drawable/ic_notifications_none_black54_24dp</item>
+        <item name="attr/icon_notifications_paused">@drawable/ic_notifications_paused_black54_24dp
+        </item>
+        <item name="attr/icon_notifications_none">@drawable/ic_notifications_none_black54_24dp
+        </item>
     </style>
 
     <style name="ConversationsTheme.Dark" parent="@android:style/Theme.Holo">
@@ -108,9 +112,12 @@
         <item name="attr/ic_attach_photo">@drawable/ic_attach_photo_white</item>
         <item name="attr/ic_attach_record">@drawable/ic_attach_record_white</item>
 
-        <item name="attr/message_bubble_received_monochrome">@drawable/message_bubble_received_grey</item>
+        <item name="attr/message_bubble_received_monochrome">
+            @drawable/message_bubble_received_grey
+        </item>
         <item name="attr/message_bubble_sent">@drawable/message_bubble_sent_grey</item>
-        <item name="attr/message_bubble_received_green">@drawable/message_bubble_received_dark</item>
+        <item name="attr/message_bubble_received_green">@drawable/message_bubble_received_dark
+        </item>
 
         <item name="attr/unread_count">@color/unreadcountdark</item>
 
@@ -167,7 +174,8 @@
         <item name="TextSizeHeadline">22sp</item>
     </style>
 
-    <style name="ConversationsActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+    <style name="ConversationsActionBar"
+        parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@color/primary500</item>
         <item name="android:backgroundStacked">@color/primary700</item>
         <item name="android:displayOptions">showHome|homeAsUp|showTitle</item>
@@ -183,12 +191,15 @@
 
     <style name="ConversationsActionBarWidget" parent="android:Theme.Holo.Light">
         <item name="android:popupMenuStyle">@android:style/Widget.Holo.Light.PopupMenu</item>
-        <item name="android:dropDownListViewStyle">@android:style/Widget.Holo.Light.ListView.DropDown</item>
+        <item name="android:dropDownListViewStyle">
+            @android:style/Widget.Holo.Light.ListView.DropDown
+        </item>
     </style>
 
     <style name="ConversationsActionBarWidget.Dark" parent="android:Theme.Holo">
         <item name="android:popupMenuStyle">@android:style/Widget.Holo.PopupMenu</item>
-        <item name="android:dropDownListViewStyle">@android:style/Widget.Holo.ListView.DropDown</item>
+        <item name="android:dropDownListViewStyle">@android:style/Widget.Holo.ListView.DropDown
+        </item>
     </style>
 
     <style name="ConversationsActionBarTabs" parent="@android:style/Widget.Holo.ActionBar.TabView">

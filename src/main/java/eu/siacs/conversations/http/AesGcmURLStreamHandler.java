@@ -12,6 +12,6 @@ public class AesGcmURLStreamHandler extends URLStreamHandler {
 
     @Override
     protected URLConnection openConnection(URL url) throws IOException {
-        return new URL("https"+url.toString().substring(url.getProtocol().length())).openConnection();
+        return new URL("https" + url.toString().substring(url.getProtocol().length())).openConnection();
     }
 }

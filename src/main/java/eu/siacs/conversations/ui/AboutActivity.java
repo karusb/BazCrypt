@@ -13,7 +13,7 @@ public class AboutActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         Boolean dark = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
-                        .getString("theme", "light").equals("dark");
+                .getString("theme", "light").equals("dark");
         int mTheme = dark ? R.style.ConversationsTheme_Dark : R.style.ConversationsTheme;
         setTheme(mTheme);
 

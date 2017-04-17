@@ -113,7 +113,7 @@ public class BarcodeProvider extends ContentProvider implements ServiceConnectio
                             outputStream.close();
                             outputStream.flush();
                         }
-                        return ParcelFileDescriptor.open(file,ParcelFileDescriptor.MODE_READ_ONLY);
+                        return ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
                     }
                 } catch (Exception e) {
                     throw new FileNotFoundException();
@@ -130,7 +130,7 @@ public class BarcodeProvider extends ContentProvider implements ServiceConnectio
         if (context != null) {
             synchronized (this) {
                 if (mXmppConnectionService == null && !mBindingInProcess) {
-                    Log.d(Config.LOGTAG,"calling to bind service");
+                    Log.d(Config.LOGTAG, "calling to bind service");
                     context.startService(intent);
                     context.bindService(intent, this, Context.BIND_AUTO_CREATE);
                     this.mBindingInProcess = true;
@@ -173,7 +173,7 @@ public class BarcodeProvider extends ContentProvider implements ServiceConnectio
                 lock.wait();
             }
         } else {
-            Log.d(Config.LOGTAG,"not waiting for service because already initialized");
+            Log.d(Config.LOGTAG, "not waiting for service because already initialized");
         }
     }
 

@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
@@ -57,7 +58,7 @@ public class TLSSocketFactory extends SSLSocketFactory {
     }
 
     private static Socket enableTLSOnSocket(Socket socket) {
-        if(socket != null && (socket instanceof SSLSocket)) {
+        if (socket != null && (socket instanceof SSLSocket)) {
             try {
                 SSLSocketHelper.setSecurity((SSLSocket) socket);
             } catch (NoSuchAlgorithmException e) {

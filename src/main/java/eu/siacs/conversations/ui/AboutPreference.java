@@ -8,15 +8,15 @@ import android.util.AttributeSet;
 import eu.siacs.conversations.utils.PhoneHelper;
 
 public class AboutPreference extends Preference {
-	public AboutPreference(final Context context, final AttributeSet attrs, final int defStyle) {
-		super(context, attrs, defStyle);
-		setSummary();
-	}
+    public AboutPreference(final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
+        setSummary();
+    }
 
-	public AboutPreference(final Context context, final AttributeSet attrs) {
-		super(context, attrs);
-		setSummary();
-	}
+    public AboutPreference(final Context context, final AttributeSet attrs) {
+        super(context, attrs);
+        setSummary();
+    }
 
     @Override
     protected void onClick() {
@@ -26,7 +26,7 @@ public class AboutPreference extends Preference {
     }
 
     private void setSummary() {
-		setSummary("Conversations " + PhoneHelper.getVersionName(getContext()));
-	}
+        setSummary("Conversations " + PhoneHelper.getVersionName(getContext()));
+    }
 }
 

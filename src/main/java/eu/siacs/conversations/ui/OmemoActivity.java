@@ -39,7 +39,7 @@ public abstract class OmemoActivity extends XmppActivity {
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu,v,menuInfo);
+        super.onCreateContextMenu(menu, v, menuInfo);
         Object account = v.getTag(R.id.TAG_ACCOUNT);
         Object fingerprint = v.getTag(R.id.TAG_FINGERPRINT);
         Object fingerprintStatus = v.getTag(R.id.TAG_FINGERPRINT_STATUS);
@@ -71,13 +71,13 @@ public abstract class OmemoActivity extends XmppActivity {
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.distrust_key:
-                showPurgeKeyDialog(mSelectedAccount,mSelectedFingerprint);
+                showPurgeKeyDialog(mSelectedAccount, mSelectedFingerprint);
                 break;
             case R.id.copy_omemo_key:
                 copyOmemoFingerprint(mSelectedFingerprint);
                 break;
             case R.id.verify_scan:
-                new IntentIntegrator(this).initiateScan(Arrays.asList("AZTEC","QR_CODE"));
+                new IntentIntegrator(this).initiateScan(Arrays.asList("AZTEC", "QR_CODE"));
                 break;
         }
         return true;
@@ -92,7 +92,7 @@ public abstract class OmemoActivity extends XmppActivity {
             if (xmppConnectionServiceBound) {
                 processFingerprintVerification(uri);
             } else {
-                this.mPendingFingerprintVerificationUri =uri;
+                this.mPendingFingerprintVerificationUri = uri;
             }
         }
     }
@@ -119,21 +119,21 @@ public abstract class OmemoActivity extends XmppActivity {
                 true,
                 true,
                 new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                account.getAxolotlService().setFingerprintTrust(fingerprint, FingerprintStatus.createActive(isChecked));
-            }
-        });
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        account.getAxolotlService().setFingerprintTrust(fingerprint, FingerprintStatus.createActive(isChecked));
+                    }
+                });
     }
 
     protected void addFingerprintRowWithListeners(LinearLayout keys, final Account account,
-                                                     final String fingerprint,
-                                                     boolean highlight,
-                                                     FingerprintStatus status,
-                                                     boolean showTag,
-                                                     boolean undecidedNeedEnablement,
-                                                     CompoundButton.OnCheckedChangeListener
-                                                             onCheckedChangeListener) {
+                                                  final String fingerprint,
+                                                  boolean highlight,
+                                                  FingerprintStatus status,
+                                                  boolean showTag,
+                                                  boolean undecidedNeedEnablement,
+                                                  CompoundButton.OnCheckedChangeListener
+                                                          onCheckedChangeListener) {
         View view = getLayoutInflater().inflate(R.layout.contact_key, keys, false);
         TextView key = (TextView) view.findViewById(R.id.key);
         TextView keyType = (TextView) view.findViewById(R.id.key_type);
@@ -141,7 +141,7 @@ public abstract class OmemoActivity extends XmppActivity {
             View.OnClickListener listener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showX509Certificate(account,fingerprint);
+                    showX509Certificate(account, fingerprint);
                 }
             };
             key.setOnClickListener(listener);
@@ -151,14 +151,14 @@ public abstract class OmemoActivity extends XmppActivity {
         ImageView verifiedFingerprintSymbol = (ImageView) view.findViewById(R.id.verified_fingerprint);
         trustToggle.setVisibility(View.VISIBLE);
         registerForContextMenu(view);
-        view.setTag(R.id.TAG_ACCOUNT,account);
-        view.setTag(R.id.TAG_FINGERPRINT,fingerprint);
-        view.setTag(R.id.TAG_FINGERPRINT_STATUS,status);
+        view.setTag(R.id.TAG_ACCOUNT, account);
+        view.setTag(R.id.TAG_FINGERPRINT, fingerprint);
+        view.setTag(R.id.TAG_FINGERPRINT_STATUS, status);
         boolean x509 = Config.X509_VERIFICATION && status.getTrust() == FingerprintStatus.Trust.VERIFIED_X509;
         final View.OnClickListener toast;
         trustToggle.setChecked(status.isTrusted(), false);
 
-        if (status.isActive()){
+        if (status.isActive()) {
             key.setTextColor(getPrimaryTextColor());
             keyType.setTextColor(getSecondaryTextColor());
             if (status.isVerified()) {
@@ -180,7 +180,7 @@ public abstract class OmemoActivity extends XmppActivity {
                     trustToggle.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            account.getAxolotlService().setFingerprintTrust(fingerprint,FingerprintStatus.createActive(false));
+                            account.getAxolotlService().setFingerprintTrust(fingerprint, FingerprintStatus.createActive(false));
                             v.setEnabled(true);
                             v.setOnClickListener(null);
                         }
@@ -261,7 +261,7 @@ public abstract class OmemoActivity extends XmppActivity {
         if (x509Certificate != null) {
             showCertificateInformationDialog(CryptoHelper.extractCertificateInformation(x509Certificate));
         } else {
-            Toast.makeText(this,R.string.certificate_not_found, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.certificate_not_found, Toast.LENGTH_SHORT).show();
         }
     }
 
